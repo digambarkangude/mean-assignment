@@ -8,4 +8,10 @@ app.config(function($routeProvider, $locationProvider, $httpProvider){
 		templateUrl: 'client/views/user_insert_vw.html',
 		controller: 'userInsertController'
 	});
+
+	$routeProvider.when('/list',{
+		templateUrl: 'client/views/user_list_vw.html',
+		controller: 'userListController'
+	});
+
 });

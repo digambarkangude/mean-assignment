@@ -54,23 +54,12 @@ mongoClient.connect('mongodb://localhost:27017/mean',(err, res)=>{
 })
 
 app.get('/list',(req, res)=>{
-	db.collection("users").find().toArray((err, result)=>{
-		if(err){
-			console.log(err);
-		}
-		res.json(result);
-	});
-});
-
-app.get('/getByID/:id',(req, res)=>{
-	var uId = new mongodb.ObjectID(req.params.id);
-	db.collection("users").findOne({_id:uId},(err, result)=>{
-		if(err){
-			console.log(err);
-		}
-		res.json(result);
-		//console.log(util.inspect(result,{depth:1}));
-	});
+    db.collection("users").find().toArray((err, docs)=>{
+        if(err){
+            console.log(err);
+        }
+        res.json(docs);
+    });
 });
 
 /** API path that will upload the files */
