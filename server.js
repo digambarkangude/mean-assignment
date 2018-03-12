@@ -73,23 +73,23 @@ app.get('/getByID/:id',(req, res)=>{
 	});
 });
 
-	    /** API path that will upload the files */
-    app.post('/upload', function(req, res) {
-        var exceltojson;
-        upload(req,res,function(err){
-            if(err){
-                 res.json({error_code:1,err_desc:err});
-                 return;
-            }
-            /** Multer gives us file info in req.file object */
-            if(!req.file){
-                res.json({error_code:1,err_desc:"No file passed"});
-                return;
-            }
+/** API path that will upload the files */
+app.post('/upload', function(req, res) {
+    var exceltojson;
+    upload(req,res,function(err){
+        if(err){
+           res.json({error_code:1,err_desc:err});
+           return;
+       }
+       /** Multer gives us file info in req.file object */
+       if(!req.file){
+        res.json({error_code:1,err_desc:"No file passed"});
+        return;
+    }
             /** Check the extension of the incoming file and 
              *  use the appropriate module
              */
-            if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
+             if(req.file.originalname.split('.')[req.file.originalname.split('.').length-1] === 'xlsx'){
                 exceltojson = xlsxtojson;
             } else {
                 exceltojson = xlstojson;
@@ -104,27 +104,34 @@ app.get('/getByID/:id',(req, res)=>{
                     if(err) {
                         return res.json({error_code:1,err_desc:err, data: null});
                     } 
-                    console.log(result);
+                    //console.log(result);
                     //res.json({error_code:0,err_desc:null, data: result});
                     console.log ("Number of entries", result.length);
                     if(result.length>0){
-                    	var final_obj =[];
-						for( let key in result){
-							if(result.hasOwnProperty(key)){
-								let key_arr = result[key].split(".");
-								if(key_arr.length>1){
-									final_obj.push();
-								}
-							}
-						}
-						collection = db.collection('users');
-            			collection.insertMany(result)
-
+                    	var final_obj = [];
+                      for( let key in result){
+                        var temp_arr = {};
+                        for( let k in result[key]){
+                            let key_arr = k.split(".");
+                            if(key_arr.length>1){
+                                if(!temp_arr.hasOwnProperty(key_arr[0]))
+                                    temp_arr[key_arr[0]]={};
+                                temp_arr[key_arr[0]][key_arr[1]] = result[key][k];
+                            }else{
+                                temp_arr[k] = result[key][k];
+                            }
+                            final_obj.push(temp_arr);
+                        }
                     }
-                });
+                    //console.log(JSON.stringify(final_obj));
+                    collection = db.collection('users');
+                    collection.insertMany(final_obj, { ordered : false });
+                    res.redirect('/#/upload');
+                }
+            });
             } catch (e){
                 res.json({error_code:1,err_desc:"Corupted excel file"});
             }
         })
-       
-    });
+
+});
