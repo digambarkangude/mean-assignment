@@ -7,6 +7,9 @@
 
 - Install all dependencies in package.json file. This can be done by navigating to the root directory in the command line interface and running the following command:
 ```
+
+$ cd mean-assignment/
+
 $ npm install
 ```
 
