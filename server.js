@@ -54,7 +54,7 @@ mongoClient.connect('mongodb://localhost:27017/mean',(err, res)=>{
 })
 
 app.get('/list',(req, res)=>{
-    db.collection("users").find().toArray((err, docs)=>{
+    db.collection("users").find().sort({"gender":-1,"nat":-1}).toArray((err, docs)=>{
         if(err){
             console.log(err);
         }
